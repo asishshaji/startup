@@ -12,30 +12,34 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// App creates the app
 type App struct {
 	httpServer *http.Server
-
-	authUC usecase.AuthUseCase
+	authUC     *usecase.AuthUseCase
 }
 
+// NewApp is the constructor
 func NewApp() *App {
-
 	db := initDB()
 
-	userRepo := repository.NewUserRepository(db,"collection")
-
-
+	userRepo := repository.NewUserRepository(db, "collection")
 	return &App{
-		authUC: usecase.NewAuthUseCase(userRepo,
-		"ASDS",
-		"ASDASD",
-		time.Hour* 45,
+		authUC: usecase.NewAuthUseCase(*userRepo,
+			"ASDS",
+			[]byte("asd"),
+			time.Hour*45,
 		),
 	}
+
+}
+
+// Run starts the server
+func (*App) Run(port string) {
+
 }
 
 func initDB() *mongo.Database {
-	client, err := mongo.NewClient(options.Client().ApplyURI("")
+	client, err := mongo.NewClient(options.Client().ApplyURI("adasd"))
 	if err != nil {
 		log.Fatalf("Error occured while establishing connection to mongoDB")
 	}
