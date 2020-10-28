@@ -6,9 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/asishshaji/startup/auth"
-	"github.com/asishshaji/startup/auth/repository"
-
+	"github.com/asishshaji/startup/apps/auth"
+	"github.com/asishshaji/startup/apps/auth/repository"
 	model "github.com/asishshaji/startup/models"
 	"github.com/dgrijalva/jwt-go/v4"
 )

@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/asishshaji/startup/auth/repository"
-	"github.com/asishshaji/startup/auth/usecase"
+	"github.com/asishshaji/startup/apps/auth/repository"
+	"github.com/asishshaji/startup/apps/auth/usecase"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -22,7 +22,7 @@ type App struct {
 func NewApp() *App {
 	db := initDB()
 
-	userRepo := repository.NewUserRepository(db, "collection")
+	userRepo := repository.NewUserRepository(db, "asd")
 	return &App{
 		authUC: usecase.NewAuthUseCase(*userRepo,
 			"ASDS",
