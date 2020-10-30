@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/asishshaji/startup/apps/auth/controller"
 	"github.com/asishshaji/startup/apps/auth/delivery"
 	"github.com/asishshaji/startup/apps/auth/repository"
 	"github.com/asishshaji/startup/apps/auth/usecase"
@@ -15,7 +16,7 @@ import (
 // App creates the app
 type App struct {
 	httpRouter delivery.Router
-	authUC     *usecase.AuthUseCase
+	controller controller.AuthController
 	port       string
 }
 
@@ -29,10 +30,13 @@ func NewApp(router *delivery.Router, port string) *App {
 		[]byte("asd"),
 		time.Hour*45,
 	)
+
+	userController := controller.NewAuthController(userUseCase)
+
 	return &App{
 		httpRouter: *router,
-		authUC:     userUseCase,
 		port:       port,
+		controller: userController,
 	}
 
 }
@@ -40,7 +44,7 @@ func NewApp(router *delivery.Router, port string) *App {
 // Run starts the server
 func (app *App) Run() {
 
-	// app.httpRouter.POST("/signup")
+	app.httpRouter.POST("/signup", app.controller.Signin)
 	// app.httpRouter.POST("/signin")
 	app.httpRouter.SERVE(app.port)
 }
