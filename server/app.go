@@ -3,9 +3,9 @@ package server
 import (
 	"context"
 	"log"
-	"net/http"
 	"time"
 
+	"github.com/asishshaji/startup/apps/auth/delivery"
 	"github.com/asishshaji/startup/apps/auth/repository"
 	"github.com/asishshaji/startup/apps/auth/usecase"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,32 +14,39 @@ import (
 
 // App creates the app
 type App struct {
-	httpServer *http.Server
+	httpRouter delivery.Router
 	authUC     *usecase.AuthUseCase
+	port       string
 }
 
 // NewApp is the constructor
-func NewApp() *App {
+func NewApp(router *delivery.Router, port string) *App {
 	db := initDB()
 
 	userRepo := repository.NewUserRepository(db, "asd")
+	userUseCase := usecase.NewAuthUseCase(*userRepo,
+		"ASDS",
+		[]byte("asd"),
+		time.Hour*45,
+	)
 	return &App{
-		authUC: usecase.NewAuthUseCase(*userRepo,
-			"ASDS",
-			[]byte("asd"),
-			time.Hour*45,
-		),
+		httpRouter: *router,
+		authUC:     userUseCase,
+		port:       port,
 	}
 
 }
 
 // Run starts the server
-func (*App) Run(port string) {
+func (app *App) Run() {
 
+	// app.httpRouter.POST("/signup")
+	// app.httpRouter.POST("/signin")
+	app.httpRouter.SERVE(app.port)
 }
 
 func initDB() *mongo.Database {
-	client, err := mongo.NewClient(options.Client().ApplyURI("adasd"))
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		log.Fatalf("Error occured while establishing connection to mongoDB")
 	}
@@ -48,6 +55,7 @@ func initDB() *mongo.Database {
 	defer cancel()
 
 	err = client.Connect(ctx)
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -56,6 +64,8 @@ func initDB() *mongo.Database {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Println("Connected to MongoDB ")
 
 	return client.Database("DB")
 }
