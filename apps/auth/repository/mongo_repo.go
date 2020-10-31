@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"log"
 
 	models "github.com/asishshaji/startup/models"
 	"go.mongodb.org/mongo-driver/bson"
@@ -9,12 +10,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// User creates mongodb user instance
 type User struct {
 	ID       primitive.ObjectID `bson:"_id,omitempty"`
 	Username string             `bson:"username"`
 	Password string             `bson:"password"`
 }
 
+// UserRepository
 type UserRepository struct {
 	db *mongo.Collection
 }
@@ -48,6 +51,8 @@ func (r UserRepository) GetUser(ctx context.Context, username, password string) 
 		"username": username,
 		"password": password,
 	}).Decode(user)
+
+	log.Println(user)
 
 	if err != nil {
 		return nil, err

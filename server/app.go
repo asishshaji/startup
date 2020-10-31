@@ -43,9 +43,9 @@ func NewApp(router *delivery.Router, port string) *App {
 
 // Run starts the server
 func (app *App) Run() {
-
-	app.httpRouter.POST("/signup", app.controller.Signin)
-	// app.httpRouter.POST("/signin")
+	log.Println("running server")
+	app.httpRouter.POST("/signup", app.controller.Signup)
+	app.httpRouter.POST("/signin", app.controller.Signin)
 	app.httpRouter.SERVE(app.port)
 }
 

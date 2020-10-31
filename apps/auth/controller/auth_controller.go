@@ -38,10 +38,15 @@ func (controller *Authcontroller) Signin(response http.ResponseWriter, request *
 // Signup creates a new user
 func (controller *Authcontroller) Signup(response http.ResponseWriter, request *http.Request) {
 
-	err := controller.usecase.SignUp(request.Context(), mux.Vars(request)["username"], mux.Vars(request)["password"])
+	// _ := mux.Vars(request)
+
+	data := request.URL.Query()
+	username, _ := data["username"]
+	password, _ := data["password"]
+	err := controller.usecase.SignUp(request.Context(), username[0], password[0])
 
 	if err != nil {
-		http.Error(response, "Error creating new user", http.StatusBadRequest)
+		http.Error(response, err.Error(), http.StatusBadRequest)
 		return
 	}
 
